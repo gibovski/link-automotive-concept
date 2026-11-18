@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE);
 const { AxeBuilder } = require(process.env.AXE_MODULE);
 
@@ -18,7 +19,7 @@ const output = process.argv[3] || __dirname;
       page.on('requestfailed', request => errors.push(request.url()));
       page.on('response', response => { if (response.status() >= 400) errors.push(response.url()); });
       await page.goto(base);
-      const slots = page.locator('[data-photo]');
+      const slots = page.locator('.workshop-photo');
       assert.equal(await slots.count(), 4);
       assert.equal(await page.locator('.service-grid article').count(), 9);
       const assets = await page.evaluate(async () => {
@@ -29,7 +30,34 @@ const output = process.argv[3] || __dirname;
           return image.naturalWidth;
         }));
       });
-      assert.ok(assets.every(width => width >= 1));
+      assert.ok(assets.every(width => width > 1));
+      const expected = [
+        ['austin-engine-on-stand.webp', 1536, 2048],
+        ['red-mini-engine-bay.webp', 1080, 922],
+        ['twin-su-carburettors.webp', 2040, 918],
+        ['link-automotive-shop-sign.webp', 2040, 918]
+      ];
+      for (const [index, [filename, width, height]] of expected.entries()) {
+        const photo = slots.nth(index);
+        const source = await photo.evaluate(img => {
+          const { currentSrc, naturalWidth, naturalHeight, alt } = img;
+          return { currentSrc, naturalWidth, naturalHeight, alt };
+        });
+        assert.ok(source.alt);
+        assert.ok(await photo.isVisible());
+        assert.ok(new URL(source.currentSrc).pathname.endsWith('/' + filename));
+        assert.deepEqual([source.naturalWidth, source.naturalHeight], [width, height]);
+        const response = await context.request.get(source.currentSrc);
+        assert.equal(response.status(), 200);
+        assert.match(response.headers()['content-type'], /image\/webp/);
+        const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+        assert.equal(digest(await response.body()), digest(fs.readFileSync(path.join(__dirname, '../../../site/assets', filename))));
+      }
+      for (const href of await page.locator('link[rel*="icon"]').evaluateAll(links => links.map(link => link.href))) {
+        const response = await context.request.get(href);
+        assert.equal(response.status(), 200);
+        assert.match(response.headers()['content-type'], /^image\//);
+      }
       assert.equal(await page.locator('.hero-grid').evaluate(el => getComputedStyle(el).animationName), 'none');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       assert.deepEqual(errors, []);
@@ -43,31 +71,27 @@ const output = process.argv[3] || __dirname;
       await page.keyboard.press('Tab');
       assert.equal(await page.locator(':focus-visible').innerText(), 'Skip to content');
       await page.keyboard.press('Enter');
-      assert.equal(new URL(page.url()).hash, '#main');
+      await page.waitForURL(url => url.hash === '#main');
       await page.keyboard.press('Tab');
       assert.match(await page.locator(':focus-visible').innerText(), /Discuss your car/);
       await page.keyboard.press('Enter');
-      assert.equal(new URL(page.url()).hash, '#contact');
+      await page.waitForURL(url => url.hash === '#contact');
       assert.equal(await page.getByRole('link', { name: 'Call 03 9873 3874' }).getAttribute('href'), 'tel:+61398733874');
       const directions = await page.getByRole('link', { name: 'Get directions' }).getAttribute('href');
       assert.equal(new URL(directions).searchParams.get('destination'), '1 Walter Street, Moorabbin VIC 3189, Australia');
       for (const link of await page.getByRole('navigation').getByRole('link').all()) {
         await link.click();
-        assert.equal(new URL(page.url()).hash, await link.getAttribute('href'));
+        const target = await link.getAttribute('href');
+        await page.waitForURL(url => url.hash === target);
       }
       console.log(`PASS Chromium ${width}px: assets, reflow, reduced motion, axe, keyboard and contact links`);
-      if (width === 390) {
-        await page.route('**/austin-engine-on-stand.webp', route => route.fulfill({
-          path: path.join(__dirname, '../../../site/assets/link-workshop-team.jpg')
-        }));
-        await page.route('**/red-mini-engine-bay.webp', route => route.abort());
-        await page.goto(base);
-        await page.locator('#projects').scrollIntoViewIfNeeded();
-        await page.locator('.hero-photo.has-photo > img').waitFor();
-        assert.equal(await page.locator('.hero-photo.has-photo > img').getAttribute('data-photo'), 'assets/austin-engine-on-stand.webp');
-        assert.ok(await page.getByText('Road & event preparation').isVisible());
-        console.log('PASS 390px: valid replacement reveals photo and failed asset keeps fallback');
-      }
+      await page.goto(base);
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Tab');
+      assert.match(await page.locator(':focus-visible').innerText(), /Contact & directions/);
+      await page.keyboard.press('Enter');
+      await page.waitForURL(url => url.hash === '#contact');
+      console.log('PASS banner keyboard navigation and all four network WebPs match the source bytes');
       await context.close();
     }
   } finally {
