@@ -26,6 +26,7 @@ h3 { font-size: clamp(1.8rem, 3vw, 2.25rem); }
 .wrap { width: min(100% - 2rem, 78rem); margin-inline: auto; }
 .skip { position: absolute; z-index: 2; top: .5rem; left: .5rem; padding: .65rem 1rem; background: var(--lime); color: var(--ink); transform: translateY(-150%); }
 .skip:focus { transform: none; }
+.concept-notice { padding: .45rem 1rem; background: var(--panel); color: var(--paper); border-bottom: 1px solid var(--line); font-size: .85rem; text-align: center; }
 .mast { border-bottom: 1px solid var(--line); }
 .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; padding-block: .65rem 0; gap: .25rem .7rem; }
 .brand { display: inline-flex; align-items: center; gap: .55rem; text-decoration: none; font: 700 1.55rem/.85 var(--display); letter-spacing: .06em; }
