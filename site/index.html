@@ -7,9 +7,12 @@
   <meta name="theme-color" content="#131b17">
   <meta name="description" content="An unofficial Link Automotive workshop concept for the BMC, British Leyland and MOWOG family, general servicing and performance projects in Moorabbin.">
   <title>Link Automotive | Classic British &amp; Performance Workshop Concept</title>
-  <link rel="icon" href="assets/link-icon.png">
-  <link rel="stylesheet" href="styles.css?v=engineering">
-  <script src="photos.js" defer></script>
+  <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="favicon-48.png" sizes="48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+  <link rel="stylesheet" href="styles.css?v=workshop-photos">
+  <script src="photos.js?v=workshop-photos" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#main">Skip to content</a>
@@ -36,10 +39,10 @@
             <a class="button outline" href="#services">Explore services <span aria-hidden="true">↓</span></a>
           </div>
         </div>
-        <figure class="hero-photo">
-          <img src="assets/bmc-museum-cutaway.jpg" width="1500" height="1110" alt="BMC engine cutaway with exposed internal components at Birmingham Museums Collection Centre" fetchpriority="high">
-          <figcaption>BMC cutaway engine, Birmingham Museums Collection Centre. <a href="https://commons.wikimedia.org/wiki/File:BMC_cutaway_engine_at_Birmingham_Museum_Collection_May_2015_(3).jpg">Victuallers</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> · Resized and displayed with a crop.</figcaption>
-        </figure>
+        <div class="photo-slot hero-photo">
+          <span class="slot-label" aria-hidden="true"><img src="assets/link-mark.webp" width="1010" height="750" alt=""></span>
+          <img data-photo="assets/austin-engine-on-stand.webp" alt="Sage-green Austin engine on a stand in the Link Automotive workshop" fetchpriority="high">
+        </div>
       </div>
     </section>
 
@@ -77,8 +80,7 @@
           <p>Three ways to scope a project, from getting a car back on the road to preparing it for a weekend event.</p>
         </div>
         <div class="project-grid">
-          <article>
-            <div class="photo-slot"><span class="slot-label" aria-hidden="true">Engine &amp; restoration</span><img data-photo="assets/austin-engine-on-stand.webp" alt="Freshly restored sage-green Austin engine on a stand in the workshop"></div>
+          <article class="project-summary">
             <h3>Recommission a classic</h3><p>Start with the condition of the engine and fuel system. Establish what needs rebuilding, then work through cooling, brakes and steering before putting road miles on the car.</p>
           </article>
           <article>

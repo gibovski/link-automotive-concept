@@ -58,13 +58,13 @@ const output = process.argv[3] || __dirname;
       console.log(`PASS Chromium ${width}px: assets, reflow, reduced motion, axe, keyboard and contact links`);
       if (width === 390) {
         await page.route('**/austin-engine-on-stand.webp', route => route.fulfill({
-          path: path.join(__dirname, '../../../site/assets/bmc-museum-cutaway.jpg')
+          path: path.join(__dirname, '../../../site/assets/link-workshop-team.jpg')
         }));
         await page.route('**/red-mini-engine-bay.webp', route => route.abort());
         await page.goto(base);
         await page.locator('#projects').scrollIntoViewIfNeeded();
-        await page.locator('.has-photo img').waitFor();
-        assert.equal(await page.locator('.has-photo img').getAttribute('data-photo'), 'assets/austin-engine-on-stand.webp');
+        await page.locator('.hero-photo.has-photo > img').waitFor();
+        assert.equal(await page.locator('.hero-photo.has-photo > img').getAttribute('data-photo'), 'assets/austin-engine-on-stand.webp');
         assert.ok(await page.getByText('Road & event preparation').isVisible());
         console.log('PASS 390px: valid replacement reveals photo and failed asset keeps fallback');
       }
