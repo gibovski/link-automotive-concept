@@ -16,7 +16,6 @@ Open http://127.0.0.1:8382/. The site uses bundled images and fonts and requires
 
 ## Asset credits
 
-- [Original archive photograph](https://www.linkautomotive.com.au/files/56.jpg), a green classic Mini with a white roof, is bundled byte-for-byte as `classic-mini.jpg` and used in the hero and archive.
 - [Original Link Performance Engineering artwork](https://www.linkautomotive.com.au/image6.jpg) is bundled byte-for-byte as `link-engineering.jpg`. The responsive mark, watermark and 180 × 180 icon use a cleaned crop from this larger artwork, cross-checked against [the original triangle logo](https://www.linkautomotive.com.au/TriangleLogo.png). The crop preserves the original lettering, tilted car drawing and drafting lines.
-- The [Link Automotive Facebook page](https://www.facebook.com/p/Link-Automotive-61583568842775/) exposed an illustrated profile image during sourcing. Customer car photographs could not be verified from its public Photos route. Archive imagery can be replaced at the business’s request.
+- The [Link Automotive Facebook page](https://www.facebook.com/p/Link-Automotive-61583568842775/) publicly displayed the four-person red Mini caricature as its profile image. The copy used here is bundled as `link-workshop-team.jpg`. The requested engine, workshop sign, red engine bay and twin SU photos are pending transfer.
 - Barlow Condensed is bundled under the [SIL Open Font License](site/assets/OFL-Barlow-Condensed.txt).
